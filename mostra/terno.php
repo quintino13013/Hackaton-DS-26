@@ -1,7 +1,8 @@
 <?php
-include("../conex.php");
-session_start();
-
+include("conex.php");
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 //buscar informações da tabela ternos
 $sql = "SELECT * FROM ternos";
 
@@ -26,54 +27,53 @@ $result = $conn->query($sql);
 <?php
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
+        //verificar se tem disponivel
+        $disponivel = $row['quantidadeDisponivel'] > 0;
+        $statusTexto = $disponivel ? "Disponível" : "Indisponível";
+        $statusClasse = $disponivel ? "dispo" : "indispo";
 ?>
 
     <div class="cursoBack">
+        <div class="img-container">
+            <img src="data:image/jpeg;base64,<?php echo base64_encode($row['imagemTerno']); ?>" alt="Imagem do terno">
+            
+            <div class="preco-tag">R$ <?php echo number_format($row['valorLocacao'], 2, ',', '.'); ?>/dia</div>
 
-        <p><b>Imagem:</b></p>
-        <img src="data:image/jpeg;base64,<?php echo base64_encode($row['imagemTerno']); ?>" alt="Imagem do terno" style="max-width:200px;">
-        <p></p>
-        
-        <h2><?php echo $row['nomeTerno']; ?></h2>
+            <?php if (!$disponivel): ?>
+                <div class="alugado-overlay">Alugado</div>
+            <?php endif; ?>
+        </div>
 
-        <p><?php echo $row['nomeTerno']; ?></p>
-        <p><?php echo substr($row['descricaoCurso'], 0, 80); ?>...</p>
-        <p><?php echo $row['tipoTerno']; ?></p>
-        <p><?php echo $row['tipoTecido']; ?></p>
-        <p><?php echo $row['valorLocacao']; ?></p>
-        <p><?php echo $row['quantidadeDisponivel']; ?></p>
-        <p><?php echo substr($row['descricaoTerno'], 0, 80); ?>...</p>
-        
-        <!-- BOTÃO ACESSAR -->
-        <a href="<?php echo $row['linkCurso']; ?>" target="_blank">
-            <button style="background:blue; color:white;">
-                Acessar Curso
-            </button>
-        </a>
+        <div class="card-content">
+            <h3><?php echo $row['nomeTerno']; ?></h3>
+            <p class="descricao"><?php echo substr($row['descricaoTerno'], 0, 60); ?>...</p>
+            
+            <div class="status-container">
+                <span class="badge cor"><?php echo $row['tipoTerno']; ?></span>
+                <span class="badge <?php echo $statusClasse; ?>"><?php echo $statusTexto; ?></span>
+            </div>
 
-<?php
-//só aparece se tiver o passe, fala ae
-
-if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'AD') {
-
-        //BOTÃO EXCLUIR
-        echo "<a href=\"../back/excluir.php?id=" . $row['idTerno'] . "\"
-           onclick=\"return confirm('Tem certeza que deseja excluir?');\">
-            <button style=\"background:red; color:white;\">
-                Excluir
-            </button>
-        </a>";
-}
-?>
-
-
+            <div class="btn-group">
+                <button class="btn-detalhes">👁 Detalhes</button>
+            <!-- só aparece se tiver o passe, fala aí-->
+                <?php if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'AD'): ?>
+                    <a href="../back/excluir.php?id=<?php echo $row['idTerno']; ?>" onclick="return confirm('Excluir este terno?');" style="width:100%">
+                        <button class="btn-excluir">Excluir</button>
+                    </a>
+                <?php else: ?>
+                    <button class="btn-alugar" <?php echo !$disponivel ? 'disabled' : ''; ?>>
+                        Alugar
+                    </button>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 <?php
     }
 } else {
-    echo "<p>Nenhum curso cadastrado.</p>";
+    echo "<p style='color:white;'>Nenhum terno cadastrado.</p>";
 }
 ?>
-
 </div>
 
 </body>
