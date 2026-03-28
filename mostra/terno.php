@@ -50,15 +50,21 @@ if ($result->num_rows > 0) {
             </button>
         </a>
 
-        <!-- BOTÃO EXCLUIR -->
-        <a href="../back/excluir.php?id=<?php echo $row['idTerno']; ?>" 
-           onclick="return confirm('Tem certeza que deseja excluir?');">
-            <button style="background:red; color:white;">
+<?php
+//só aparece se tiver o passe, fala ae
+
+if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'AD') {
+    
+        //BOTÃO EXCLUIR
+        echo "<a href=\"../back/excluir.php?id=" . $row['idTerno'] . "\"
+           onclick=\"return confirm('Tem certeza que deseja excluir?');\">
+            <button style=\"background:red; color:white;\">
                 Excluir
             </button>
-        </a>
+        </a>";
+}
+?>
 
-    </div>
 
 <?php
     }
