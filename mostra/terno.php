@@ -1,5 +1,6 @@
 <?php
 include("../conex.php");
+session_start();
 
 //buscar informações da tabela ternos
 $sql = "SELECT * FROM ternos";
@@ -54,7 +55,7 @@ if ($result->num_rows > 0) {
 //só aparece se tiver o passe, fala ae
 
 if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'AD') {
-    
+
         //BOTÃO EXCLUIR
         echo "<a href=\"../back/excluir.php?id=" . $row['idTerno'] . "\"
            onclick=\"return confirm('Tem certeza que deseja excluir?');\">
