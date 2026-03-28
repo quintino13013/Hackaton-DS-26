@@ -1,6 +1,6 @@
 <?php
 
-require '../conex.php';
+//require '../conex.php';
 
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
@@ -13,8 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include '../back/login.php';
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -35,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" autocomplete="off">
         <label for="login">Nick ou E-mail</label>
-        <input type="text" name="login" id="login" required 
-               autofocus placeholder="Seu nick ou e-mail">
+        <input type="text" name="login" id="login" required autofocus placeholder="Seu nick ou e-mail"><br><br>
 
         <label for="senha">Senha</label>
         <input type="password" name="senha" id="senha" required>

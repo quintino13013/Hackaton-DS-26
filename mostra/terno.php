@@ -43,9 +43,6 @@ if ($result->num_rows > 0) {
         <p><?php echo $row['quantidadeDisponivel']; ?></p>
         <p><?php echo substr($row['descricaoTerno'], 0, 80); ?>...</p>
         
-        
-
-
         <!-- BOTÃO ACESSAR -->
         <a href="<?php echo $row['linkCurso']; ?>" target="_blank">
             <button style="background:blue; color:white;">

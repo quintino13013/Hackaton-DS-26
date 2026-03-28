@@ -6,7 +6,7 @@ session_regenerate_id(true);
 
 // Configurações do banco
 $host    = 'localhost:3308';
-$db      = 'hackaton';
+$db      = 'sistema_locadora';
 $user    = 'root';
 $pass    = 'etec123';
 $charset = 'utf8mb4';
@@ -31,23 +31,28 @@ try {
 
 $erro = "";
 
-
-    
-    //verificar na tabela pessoa
+    //puxar do post e verificar na tabela pessoa
    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        try {
-            $sqlPessoa = "SELECT idPessoa, nomePessoa, nickPessoa, emailPessoa, senhaPessoa, tipoPessoa, statusPessoa FROM pessoa WHERE (nickPessoa = :login_nick OR emailPessoa = :login_email) LIMIT 1";
+        $login = trim($_POST['login'] ?? '');
+        $senha = $_POST['senha'] ?? '';
 
-            $stmt = $pdo->prepare($sqlPessoa);
-            $stmt->bindParam(':login_nick', $login);
-            $stmt->bindParam(':login_email', $login);
-            $stmt->execute();
-            $pessoa = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($login === '' || $senha === '') {
+            $erro = "Preencha login e senha.";
+        } else {
+            try {
+                $sqlPessoa = "SELECT idPessoa, nomePessoa, loginPessoa, emailPessoa, senhaPessoa, tipoPessoa, statusPessoa FROM pessoa WHERE (loginPessoa = :login_nick OR emailPessoa = :login_email) LIMIT 1";
 
-                // Validar credenciais em uma única estrutura
+                $stmt = $pdo->prepare($sqlPessoa);
+                $stmt->bindParam(':login_nick', $login);
+                $stmt->bindParam(':login_email', $login);
+                $stmt->execute();
+                $pessoa = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            //validar credenciais em uma única estrutura
             if (!$pessoa) {
                 $erro = "Usuário não encontrado.";
                 //echo "Erro real: " . $e->getMessage();
+
             } elseif ($pessoa['statusPessoa'] !== 'A') {
                 $erro = "Conta inativa ou bloqueada.";
             } elseif (!password_verify($senha, $pessoa['senhaPessoa'])) {
@@ -59,11 +64,13 @@ $erro = "";
 
                 session_regenerate_id(true);
             
-                    $proximaPagina = "../HTML/LandingPage.html"; //isso aq vai pra user comum
+                    $proximaPagina = "../index.php"; //isso aq vai pra user comum
 
                     //verificar se é adm
                     if ($pessoa['tipoPessoa'] === 'AD') {
+                        $_SESSION['usuario_id'] = $pessoa['idPessoa'];
                         $_SESSION['usuario_tipo'] = 'AD';
+
                         $proximaPagina = "../menu.php"; //redireciona pro menu de adm
                     }
 
@@ -74,11 +81,11 @@ $erro = "";
             }
 
         } catch (PDOException $e) {
-            //$erro = "Erro no sistema ao verificar pessoa.";
-            echo "Erro real: " . $e->getMessage(); // Isso vai te dar a pista final
+            $erro = "Erro no sistema ao verificar pessoa.";
+            //echo "Erro real: " . $e->getMessage();
         }
     }
-
+}
 
 if (!empty($erro)) {
     echo $erro;
