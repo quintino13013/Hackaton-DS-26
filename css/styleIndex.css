@@ -234,3 +234,59 @@ section.produtos h2 {
         font-size: 3.2rem;
     }
 }
+/* ==================== ESTILO DO BOTÃO SAIR ==================== */
+.menu-links {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;           /* espaço entre os itens */
+}
+
+.menu-links a,
+.menu-links .btn-sair {
+    color: #ddd;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+}
+
+/* Efeito hover igual aos links */
+.menu-links a:hover,
+.menu-links .btn-sair:hover {
+    color: var(--primary);
+}
+
+.menu-links a::after,
+.menu-links .btn-sair::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.menu-links a:hover::after,
+.menu-links .btn-sair:hover::after {
+    width: 100%;
+}
+
+/* pra fcelular */
+@media (max-width: 768px) {
+    .menu-links {
+        gap: 1.5rem;
+    }
+    
+    .menu {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
