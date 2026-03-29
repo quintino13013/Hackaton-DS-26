@@ -1,4 +1,13 @@
 <?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+//se não é adm, não consegue entrar
+if (!isset($_SESSION['usuario_tipo']) || $_SESSION['usuario_tipo'] !== 'AD') {
+    header("Location: ../index.php");
+    exit();
+}
 
 //erros ativados, comenta isso aí quando for apresentar
 ini_set('display_errors', 1);
