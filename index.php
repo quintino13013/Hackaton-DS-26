@@ -10,25 +10,13 @@ require_once 'conex.php';
     <title>Locação de terno</title>
     <link rel="stylesheet" href="css/styleIndex.css">
 </head>
-<script>
-    const slides = document.querySelectorAll('#carousel li');
-    let current = 0;
-
-    function nextSlide() {
-        slides[current].classList.remove('active');
-        current = (current + 1) % slides.length;
-        slides[current].classList.add('active');
-    }
-
-    setInterval(nextSlide, 5000);
-</script>
 <body>
     <!-- Menu -->
 <nav class="menu">
     <a href="index.php" class="logo">Locação de Ternos</a>
     <nav>
         <a href="index.php">Home</a>
-        <a href="back/login.php">Login</a>
+        <a href="login/login.php">Login</a>
         <a href="cadastrar/pessoa.php">Cadastro</a>
     </nav>
 </nav>
@@ -36,9 +24,12 @@ require_once 'conex.php';
 <!-- Hero com carrossel -->
 <div class="hero">
     <ul class="carrossel" id="carousel">
-        <li class="active"><img src="/imagens/banner.jpeg" alt="Terno elegante"></li>
-        <li><img src="/imagens/banner2.jpg" alt="Terno moderno"></li>
-        <li><img src="/imagens/banner3.jpg" alt="Terno clássico"></li>
+        <li class="active"><img src="/imagens/banner1.png" alt="Terno elegante"></li>
+        <li><img src="/imagens/banner2.png" alt="Terno moderno"></li>
+        <li><img src="/imagens/banner3.png" alt="LeBron sem terno"></li>
+        <li><img src="/imagens/banner4.png" alt="LeBron com terno"></li>
+        <li><img src="/imagens/banner5.png" alt="Terno clássico"></li>
+
     </ul>
     
     <div class="hero-content">
@@ -57,6 +48,19 @@ require_once 'conex.php';
         </div>
     </div>
 </section>
+
+<script>
+    const slides = document.querySelectorAll('#carousel li');
+    let current = 0;
+
+    function nextSlide() {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+    }
+
+    setInterval(nextSlide, 5000);
+</script>
 </body>
 </html>
 <?php
