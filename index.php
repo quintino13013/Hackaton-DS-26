@@ -12,14 +12,7 @@ require_once 'conex.php';
 </head>
 <body>
     <!-- Menu -->
-<nav class="menu">
-    <a href="index.php" class="logo">Locação de Ternos</a>
-    <nav>
-        <a href="index.php">Home</a>
-        <a href="login/login.php">Login</a>
-        <a href="cadastrar/pessoa.php">Cadastro</a>
-    </nav>
-</nav>
+<?php include_once 'menu.php' ?>
 
 <!-- Hero com carrossel -->
 <div class="hero">
