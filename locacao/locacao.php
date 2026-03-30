@@ -1,12 +1,22 @@
 <?php
 session_start();
-include("conex.php"); // conexão com o banco
+include("../conex.php");
 
 $erro = '';
 $mensagem = '';
 
 // Simulação de login de cliente (para teste)
 if(!isset($_SESSION['idCliente'])){
+    // Verificar se cliente teste existe
+    $sqlCliente = "SELECT idPessoa FROM pessoa WHERE idPessoa = 1";
+    $resultCliente = mysqli_query($conn, $sqlCliente);
+    
+    if(mysqli_num_rows($resultCliente) == 0){
+        // Criar cliente teste se não existir
+        $sqlInsertCliente = "INSERT INTO pessoa (idPessoa, nomePessoa, email, telefone) VALUES (1, 'Cliente Teste', 'teste@email.com', '11999999999')";
+        mysqli_query($conn, $sqlInsertCliente);
+    }
+    
     $_SESSION['idCliente'] = 1; // id do cliente teste
     $_SESSION['nomeCliente'] = "Cliente Teste";
 }
@@ -22,7 +32,7 @@ if(isset($_POST['acao']) && $_POST['acao'] == 'locar'){
 
     // Buscar terno
     $sql = "SELECT * FROM ternos WHERE idTerno='$idTerno'";
-    $result = mysqli_query($con, $sql);
+    $result = mysqli_query($conn, $sql);
     $terno = mysqli_fetch_assoc($result);
 
     if(!$terno){
@@ -37,13 +47,13 @@ if(isset($_POST['acao']) && $_POST['acao'] == 'locar'){
         $valorTotal = $dias * $terno['valorLocacao'];
 
         // Salvar locação
-        $sqlInsert = "INSERT INTO locacoes (idCliente, idTerno, dataLocacao, dataPrevista, statusLocacao)
-                      VALUES ('$idCliente','$idTerno','$dataHoje','$dataDevolucao','AL')";
-        mysqli_query($con, $sqlInsert);
+        $sqlInsert = "INSERT INTO locacoes (idCliente, idTerno, tamanhoTerno, dataLocacao, dataPrevista, dataDevolucao, statusLocacao)
+                      VALUES ('$idCliente','$idTerno','$tamanho','$dataHoje','$dataDevolucao','$dataDevolucao','AL')";
+        mysqli_query($conn, $sqlInsert);
 
         // Atualizar quantidade disponível
         $novaQtd = $terno['quantidadeDisponivel'] - 1;
-        mysqli_query($con, "UPDATE ternos SET quantidadeDisponivel='$novaQtd' WHERE idTerno='$idTerno'");
+        mysqli_query($conn, "UPDATE ternos SET quantidadeDisponivel='$novaQtd' WHERE idTerno='$idTerno'");
 
         $mensagem = "
         ✔ Locação realizada com sucesso! <br>
@@ -56,7 +66,7 @@ if(isset($_POST['acao']) && $_POST['acao'] == 'locar'){
 }
 
 // Buscar ternos para o select
-$ternos = mysqli_query($con, "SELECT * FROM ternos WHERE quantidadeDisponivel > 0");
+$ternos = mysqli_query($conn, "SELECT * FROM ternos WHERE quantidadeDisponivel > 0");
 ?>
 
 <!DOCTYPE html>
@@ -98,10 +108,13 @@ input[type=submit] { width: auto; margin-top: 10px; cursor: pointer; }
 
         <label for="tamanho">Tamanho:</label>
         <select name="tamanho" required>
+            <option value="PP">PP</option>
             <option value="P">P</option>
             <option value="M">M</option>
             <option value="G">G</option>
             <option value="GG">GG</option>
+            <option value="XG">XG</option>
+            <option value="XGG">XGG</option>
         </select>
 
         <label for="dataDevolucao">Data de devolução:</label>
