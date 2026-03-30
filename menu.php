@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 
 <nav class="menu">
     <a href="index.php" class="logo">Locação de Ternos</a>
@@ -6,6 +10,7 @@
     <nav class="menu-links">
       <?php if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'AD'): ?>
         <a href="cadastrar/terno.php">Cadastrar Terno</a>
+        <a href="locacao/mostrarLocacao.php">Histórico de locações</a>
       <?php endif; ?>
       
         <a href="index.php">Home</a>
