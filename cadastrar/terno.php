@@ -65,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tipo_cadastro'])) {
         <option value="Fraque">Fraque</option>
     </select>
 
-<<label for="imagemTerno">Imagem do terno:</label>
+<label for="imagemTerno">Imagem do terno:</label>
 <input type="file" name="imagemTerno" accept="image/*">
 
 <br><br>
 <button type="submit">Cadastrar Terno</button>
-
+<a href="../index.php">Home</a>
 
 
 </form>
