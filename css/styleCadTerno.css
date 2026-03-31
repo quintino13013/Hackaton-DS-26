@@ -1,29 +1,135 @@
+/* Importando as fontes para manter o padrão */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial;
-    background-color: #f5f5f5;
-    text-align: center;
+    background-color: #0f0f0f; /* Fundo quase preto */
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+    min-height: 100vh;
 }
 
-form {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
-    margin: auto;
+/* Título Estilizado */
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #c5a059; /* Dourado */
+    font-size: 32px;
+    margin-bottom: 40px;
+    text-transform: capitalize;
 }
 
-input, select {
-    width: 90%;
-    padding: 8px;
-    margin: 5px 0;
-}
-
-button {
-    background-color: #030213;
-    color: white;
-    border: none;
-    padding: 10px;
+/* Container do Formulário */
+#formCadastro {
+    background-color: #1a1a1a; /* Cinza bem escuro */
+    padding: 40px;
+    border-radius: 12px;
     width: 100%;
-    border-radius: 10px;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid #2a2a2a;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-size: 14px;
+    color: #bbb;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Inputs, Selects e Textarea */
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #262626;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+/* Estilização específica do Select para remover a aparência padrão do navegador */
+select {
     cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23c5a059' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+/* Foco nos campos */
+input:focus, select:focus {
+    border-color: #c5a059;
+}
+
+/* Estilização do Input File (Upload) */
+input[type="file"] {
+    padding: 10px;
+    background-color: #1a1a1a;
+    border: 1px dashed #444;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: #c5a059;
+}
+
+/* Botão de Enviar */
+button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #c5a059;
+    color: #121212;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #a38448;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(197, 160, 89, 0.3);
+}
+
+/* Link Voltar (Home) */
+a[href="../index.php"] {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+a[href="../index.php"]:hover {
+    color: #c5a059;
+}
+
+/* Pequeno ajuste para o asterisco de obrigatoriedade */
+span {
+    font-weight: bold;
 }

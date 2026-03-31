@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Poppins:wght@300;400;500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0f0f;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Lado da Imagem */
+.left-side {
+    flex: 1.2; /* Um pouco mais largo que o formulário */
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                url('https://images.unsplash.com/photo-1593032465175-481ac7f401a0?q=80&w=1480&auto=format&fit=crop') center center/cover;
+    padding: 40px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.logo-top {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #c5a059;
+    font-size: 22px;
+}
+
+/* Lado do Formulário */
+.right-side {
+    flex: 1;
+    background-color: #121212;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+/* Menu Superior */
+.nav-links {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+    color: #c5a059;
+}
+
+/* Tipografia */
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #c5a059;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 35px;
+}
+
+/* Campos do Formulário */
+.cadastro-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    color: #bbb;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: #262626;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+input::placeholder {
+    color: #555;
+}
+
+input:focus {
+    border-color: #c5a059;
+}
+
+/* Botão */
+button {
+    width: 100%;
+    padding: 16px;
+    background-color: #c5a059;
+    color: #121212;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.2s, background 0.3s;
+}
+
+button:hover {
+    background-color: #a38448;
+    transform: translateY(-2px);
+}
+
+/* Rodapé do Form */
+.footer-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 13px;
+    color: #888;
+}
+
+.footer-link a {
+    color: #c5a059;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 900px) {
+    .left-side { display: none; }
+    .right-side { padding: 40px 20px; }
+}
