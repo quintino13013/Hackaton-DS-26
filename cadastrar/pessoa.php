@@ -22,6 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Cadastrar usuário</h1>
 
 <div class="cadastro-container">
+    <?php if (isset($GLOBALS['mensagem'])): ?>
+        <div class="mensagem" style="margin-bottom: 20px; padding: 10px; border-radius: 5px; <?php echo (strpos($GLOBALS['mensagem'], 'sucesso') !== false || strpos($GLOBALS['mensagem'], 'Cadastro') !== false) ? 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'; ?>">
+            <?php echo htmlspecialchars($GLOBALS['mensagem']); ?>
+        </div>
+    <?php endif; ?>
     <form action="" method="post">
         <input type="hidden" name="tipo_cadastro" id="tipo_cadastro" value="usuario">
 
@@ -32,7 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" name="loginPessoa" id="loginPessoa" required><br><br>
 
         <label for="telefonePessoa" id="telefonePessoa">Telefone:</label>
-        <input type="tel" name="telefonePessoa" id="telefonePessoa" placeholder="(00) 00000-0000" required><br><br>
+        <input type="tel" name="telefonePessoa" id="telefonePessoa" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)" required><br><br>
+
+        <label for="cpfPessoa">CPF:</label>
+        <input type="text" name="cpfPessoa" id="cpfPessoa" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)" required><br><br>
 
         <label for="emailPessoa" id="emailPessoa">Email:</label>
         <input type="email" name="emailPessoa" id="emailPessoa" placeholder="exemplo@gmail.com" required><br><br>
@@ -49,4 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 </body>
+<script src="../javascript/mascaraTelefone.js"></script>
+<script src="../javascript/mascaraCpf.js"></script>
 </html>

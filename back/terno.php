@@ -5,11 +5,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $nomeTerno = $_POST["nomeTerno"];
     $descricaoterno = $_POST["descricaoTerno"];
-    $tipoTerno = $_POST["tipoTerno"];
-    $tipoTecido = $_POST["tipoTecido"];
+    $tipoTerno = $_POST["tipoTerno"]; // now id
+    $tipoTecido = $_POST["tipoTecido"]; // now id
     $valorLocacao = $_POST["valorLocacao"];
-    $quantidadeTotal = $_POST["quantidadeTotal"];
-    $quantidadeDisponivel = $quantidadeTotal;
+    $statusTerno = 'A';
+    $quantidadeTotal = 0;
+    $quantidadeDisponivel = 0;
+    $tamanhos = $_POST["tamanhos"] ?? [];
+    $quantidades = $_POST["quantidades"] ?? [];
 
     // Handle image upload as BLOB
     $imagemTerno = null;
@@ -18,17 +21,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $sql = "INSERT INTO ternos 
-    (nomeTerno, descricaoTerno, tipoTerno, tipoTecido, valorLocacao, quantidadeTotal, quantidadeDisponivel, imagemTerno)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    (nomeTerno, descricaoTerno, idTipoTerno, idTipoTecido, valorLocacao, quantidadeTotal, quantidadeDisponivel, imagemTerno, statusTerno)
+    VALUES (?, ?, ?, ?, ?, 0, 0, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssiis", $nomeTerno, $descricaoterno, $tipoTerno, $tipoTecido, $valorLocacao, $quantidadeTotal, $quantidadeDisponivel, $imagemTerno);
+    $stmt->bind_param("ssiisss", $nomeTerno, $descricaoterno, $tipoTerno, $tipoTecido, $valorLocacao, $imagemTerno, $statusTerno);
 
     if ($stmt->execute()) {
 
         $idTerno = $conn->insert_id;
 
-        header("Location: ../mostra/terno.php");
+        // Insert sizes
+        foreach ($tamanhos as $idTamanho) {
+            $qtd = $quantidades[$idTamanho] ?? 0;
+            if ($qtd > 0) {
+                $sql2 = "INSERT INTO terno_tamanhos (idTerno, idTamanho, quantidadeDisponivel) VALUES (?, ?, ?)";
+                $stmt2 = $conn->prepare($sql2);
+                $stmt2->bind_param("iii", $idTerno, $idTamanho, $qtd);
+                $stmt2->execute();
+                $stmt2->close();
+            }
+        }
+
+        header("Location: ../cadastrar/terno.php");
         exit();
 
     } else {

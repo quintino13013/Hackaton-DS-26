@@ -14,6 +14,7 @@ if ($tipo === 'usuario') {
     $login    = trim($_POST['loginPessoa']    ?? '');
     $email    = trim($_POST['emailPessoa']    ?? '');
     $tel      = trim($_POST['telefonePessoa']      ?? '');
+    $cpf = trim($_POST['cpfPessoa']     ?? '');
     $dataCadastro = date('Y-m-d');
     $senha    = trim($_POST['senhaPessoa']     ?? '');
     $senha2   = $_POST['senhaPessoa_conf']    ?? '';
@@ -29,8 +30,14 @@ if ($tipo === 'usuario') {
         return;
     }
 
-    if (strlen($senha) < 6) {
-        $GLOBALS['mensagem'] = 'A senha deve ter pelo menos 6 caracteres';
+    if (strlen($senha) < 8) {
+        $GLOBALS['mensagem'] = 'A senha deve ter pelo menos 8 caracteres';
+        return;
+    }
+
+    //checar senha fraca
+    if (!preg_match('/[A-Z]/', $senha) || !preg_match('/[a-z]/', $senha) || !preg_match('/[0-9]/', $senha)) {
+        $GLOBALS['mensagem'] = 'A senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número';
         return;
     }
 
@@ -53,8 +60,8 @@ if ($tipo === 'usuario') {
 
     //coloca na tabela
     $sql = "INSERT INTO pessoa 
-            (nomePessoa, telefonePessoa, loginPessoa, emailPessoa, senhaPessoa, statusPessoa, tipoPessoa, dataCadastro)
-            VALUES (?, ?, ?, ?, ?, 'A', 'CL', ?)";
+            (nomePessoa, telefonePessoa, cpfPessoa, loginPessoa, emailPessoa, senhaPessoa, statusPessoa, tipoPessoa, dataCadastro)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
@@ -62,10 +69,14 @@ if ($tipo === 'usuario') {
         return;
     }
 
-    $stmt->bind_param("ssssss", $nome, $tel, $login, $email, $senhaHash, $dataCadastro);
+    $status = 'A';
+    $tipo = 'CL';
+    $stmt->bind_param("sssssssss", $nome, $tel, $cpf, $login, $email, $senhaHash, $status, $tipo, $dataCadastro);
 
     if ($stmt->execute()) {
         $GLOBALS['mensagem'] = "Cadastro realizado com sucesso!";
+        header("Location: ../login/login.php");
+        exit;
     } else {
         $GLOBALS['mensagem'] = "Erro ao salvar no banco: " . $stmt->error;
     }

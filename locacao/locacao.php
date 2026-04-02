@@ -26,40 +26,48 @@ if(isset($_POST['acao']) && $_POST['acao'] == 'locar'){
 
     $idCliente = $_SESSION['idCliente'];
     $idTerno = $_POST['idTerno'];
-    $tamanho = $_POST['tamanho'];
+    $idTamanho = $_POST['tamanho'];
+    $dataLocacao = $_POST['dataLocacao'];
     $dataDevolucao = $_POST['dataDevolucao'];
-    $dataHoje = date('Y-m-d');
+    $metodoPagamento = $_POST['metodoPagamento'];
 
-    // Buscar terno
-    $sql = "SELECT * FROM ternos WHERE idTerno='$idTerno'";
-    $result = mysqli_query($conn, $sql);
-    $terno = mysqli_fetch_assoc($result);
+    // Check if size is available
+    $sql_check = "SELECT quantidadeDisponivel FROM terno_tamanhos WHERE idTerno = ? AND idTamanho = ? AND quantidadeDisponivel > 0";
+    $stmt_check = $conn->prepare($sql_check);
+    $stmt_check->bind_param("ii", $idTerno, $idTamanho);
+    $stmt_check->execute();
+    $result_check = $stmt_check->get_result();
+    $check = $result_check->fetch_assoc();
+    $stmt_check->close();
 
-    if(!$terno){
-        $erro = "Terno não encontrado!";
-    } elseif($terno['quantidadeDisponivel'] <= 0){
-        $erro = "Terno indisponível!";
+    if (!$check) {
+        $erro = "Tamanho não disponível!";
     } else {
+        // Buscar terno
+        $sql = "SELECT * FROM ternos WHERE idTerno='$idTerno'";
+        $result = mysqli_query($conn, $sql);
+        $terno = mysqli_fetch_assoc($result);
+
         // Calcular dias e valor
-        $diff = strtotime($dataDevolucao) - strtotime($dataHoje);
+        $diff = strtotime($dataDevolucao) - strtotime($dataLocacao);
         $dias = ceil($diff / (60*60*24));
         if($dias <= 0) $dias = 1;
         $valorTotal = $dias * $terno['valorLocacao'];
 
         // Salvar locação
-        $sqlInsert = "INSERT INTO locacoes (idCliente, idTerno, tamanhoTerno, dataLocacao, dataPrevista, dataDevolucao, statusLocacao)
-                      VALUES ('$idCliente','$idTerno','$tamanho','$dataHoje','$dataDevolucao','$dataDevolucao','AL')";
+        $sqlInsert = "INSERT INTO locacoes (idCliente, idTerno, idTamanho, dataLocacao, dataPrevista, dataDevolucao, metodoPagamento, statusLocacao, valorTotal)
+                      VALUES ('$idCliente','$idTerno','$idTamanho','$dataLocacao','$dataDevolucao','$dataDevolucao','$metodoPagamento','AL', '$valorTotal')";
         mysqli_query($conn, $sqlInsert);
 
         // Atualizar quantidade disponível
-        $novaQtd = $terno['quantidadeDisponivel'] - 1;
-        mysqli_query($conn, "UPDATE ternos SET quantidadeDisponivel='$novaQtd' WHERE idTerno='$idTerno'");
+        $novaQtd = $check['quantidadeDisponivel'] - 1;
+        mysqli_query($conn, "UPDATE terno_tamanhos SET quantidadeDisponivel='$novaQtd' WHERE idTerno='$idTerno' AND idTamanho='$idTamanho'");
 
         $mensagem = "
         ✔ Locação realizada com sucesso! <br>
         ✔ Cliente: {$_SESSION['nomeCliente']} <br>
         ✔ Terno: {$terno['nomeTerno']} <br>
-        ✔ Tamanho: $tamanho <br>
+        ✔ Tamanho: (get size name) <br>
         ✔ Dias: $dias <br>
         ✔ Valor total: R$ ".number_format($valorTotal,2,',','.');
     }
@@ -106,19 +114,28 @@ input[type=submit] { width: auto; margin-top: 10px; cursor: pointer; }
             <?php endwhile; ?>
         </select>
 
-        <label for="tamanho">Tamanho:</label>
-        <select name="tamanho" required>
-            <option value="PP">PP</option>
-            <option value="P">P</option>
-            <option value="M">M</option>
-            <option value="G">G</option>
-            <option value="GG">GG</option>
-            <option value="XG">XG</option>
-            <option value="XGG">XGG</option>
-        </select>
+        <label for="dataLocacao">Data de locação:</label>
+        <input type="date" name="dataLocacao" id="dataLocacao" required onchange="atualizarPreco()" value="<?php echo date('Y-m-d'); ?>">
 
         <label for="dataDevolucao">Data de devolução:</label>
         <input type="date" name="dataDevolucao" id="dataDevolucao" required onchange="atualizarPreco()">
+
+        <label for="tamanho">Tamanho:</label>
+        <select name="tamanho" id="tamanho" required>
+            <option value="">Selecione um tamanho</option>
+            <?php
+            $tamanhos = mysqli_query($conn, "SELECT * FROM tamanhos ORDER BY nomeTamanho");
+            while($t = mysqli_fetch_assoc($tamanhos)): ?>
+                <option value="<?= $t['idTamanho'] ?>"><?= $t['nomeTamanho'] ?></option>
+            <?php endwhile; ?>
+        </select>
+
+        <label for="metodoPagamento">Método de Pagamento:</label>
+        <select name="metodoPagamento" required>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Cartão">Cartão</option>
+            <option value="Pix">Pix</option>
+        </select>
 
         <p><strong>Valor total: R$ <span id="valorTotal">0,00</span></strong></p>
 
@@ -129,14 +146,15 @@ input[type=submit] { width: auto; margin-top: 10px; cursor: pointer; }
 <script>
 function atualizarPreco(){
     const select = document.getElementById('idTerno');
+    const dataLoc = document.getElementById('dataLocacao').value;
     const dataDev = document.getElementById('dataDevolucao').value;
     const span = document.getElementById('valorTotal');
 
-    if(select.value && dataDev){
+    if(select.value && dataLoc && dataDev){
         const valorDia = parseFloat(select.selectedOptions[0].dataset.valor);
-        const hoje = new Date();
+        const loc = new Date(dataLoc);
         const devol = new Date(dataDev);
-        let dias = Math.ceil((devol - hoje)/(1000*60*60*24));
+        let dias = Math.ceil((devol - loc)/(1000*60*60*24)) + 1; // +1 to include start day?
         if(dias <= 0) dias = 1;
         const total = dias * valorDia;
         span.textContent = total.toFixed(2).replace('.',',');

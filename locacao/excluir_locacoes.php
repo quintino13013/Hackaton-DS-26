@@ -51,9 +51,9 @@ foreach($locacoes as $id) {
 
 // Redirecionar com mensagem de sucesso
 if($totalExcluido > 0) {
-    header("Location: mostrarlocacao.php?sucesso=exclusao_realizada&total=$totalExcluido");
+    header("Location: mostrarlocacao.php");
 } else {
-    header("Location: mostrarlocacao.php?erro=erro_exclusao");
+    header("Location: mostrarlocacao.php");
 }
 exit();
 ?>

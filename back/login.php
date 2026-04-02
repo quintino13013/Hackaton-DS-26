@@ -5,11 +5,7 @@ session_start();
 session_regenerate_id(true);
 
 // Configurações do banco
-$host    = 'localhost:3308';
-$db      = 'sistema_locadora';
-$user    = 'root';
-$pass    = 'etec123';
-$charset = 'utf8mb4';
+
 
 // A String de Conexão (DSN)
 // Verifique se não há espaços extras ou hífens no charset
@@ -60,6 +56,7 @@ $erro = "";
             } else {
                 // --- Todas as validações passaram, fazer login ---
                 $_SESSION['usuario_id'] = $pessoa['idPessoa'];
+                $_SESSION['usuario_nome'] = $pessoa['nomePessoa'];
                 $_SESSION['usuario_tipo'] = 'CL';
 
                 session_regenerate_id(true);
@@ -69,9 +66,10 @@ $erro = "";
                     //verificar se é adm
                     if ($pessoa['tipoPessoa'] === 'AD') {
                         $_SESSION['usuario_id'] = $pessoa['idPessoa'];
+                        $_SESSION['usuario_nome'] = $pessoa['nomePessoa'];
                         $_SESSION['usuario_tipo'] = 'AD';
 
-                        $proximaPagina = "../menu.php"; //redireciona pro menu de adm
+                        $proximaPagina = "../index.php"; //redireciona pro menu de adm
                     }
 
                     //faz rediricionamento
